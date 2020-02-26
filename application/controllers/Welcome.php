@@ -20,6 +20,10 @@ class Welcome extends CI_Controller {
 	 */
 	public function index()
 	{
-		$this->load->view('header');
+		$data = array();
+		$data['films'] =$this->MFilms->read_films();
+		// print_r($data);
+		$this->load->view('header', $data);
+		$this->load->view('films_index' , $data);
 	}
 }
