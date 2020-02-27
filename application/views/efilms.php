@@ -24,9 +24,9 @@ $data_textarea = array(
 echo form_textarea($data_textarea)."<br>";
 echo form_label('Release Date: ')."<br>";
 $data = array(
-	'type' => 'date',
-	'name' => $films['dtmFilmReleaseDate'],
-	'value' => '',
+	// 'type' => 'date',
+	'name' => 'dtmFilmReleaseDate',
+	'value' => $films['dtmFilmReleaseDate'],
 	'required' => 'true'
 );
 echo form_input($data)."<br>";
@@ -55,10 +55,11 @@ $data_textarea = array(
 'name' => 'memFilmAdditionalInfo',
 'rows' => 10,
 'cols' => 50,
+'value'=> $films['memFilmAdditionalInfo'],
 'required' => 'true'
 );
 echo form_textarea($data_textarea)."<br>";
-echo form_hidden('lngFilmTitleID');
+echo form_hidden('lngFilmTitleID', $films['lngFilmTitleID']);
 echo form_submit('films_create', 'Submit');
 echo form_close();
 ?>

@@ -84,14 +84,35 @@ class Create extends CI_Controller{
 	}
 
 	function edit_film($id = 0){
+		$data = array();
 		$data['films'] = $this->MFilms->tobe_edit_film($id);
+		$data['genres'] = $this->MGenre->read_genre();
+		$data['cert'] = $this->MCert->read_cert();
+		$this->load->vars($data);
+		var_dump($data['films']);
 		$this->load->view('efilms',$data);
+	}
+
+	function edit_films(){
+		if($this->MFilms->edit_films($_POST['strFilmTitle'],$_POST['memFilmStory'],$_POST['dtmFilmReleaseDate']
+			, $_POST['intFilmDuration'], $_POST['lngFilmGenreID'], $_POST['lngFilmCertificateID'], $_POST['memFilmAdditionalInfo'], $_POST['lngFilmTitleID'])){
+				redirect('Create/read_all_films', 'refresh');
+		}else {
+				redirect('Create/edit_film/$lngFilmTitleID', 'refresh');
+			}
 	}
 
 	function del_film($id =0){
 		if($this->MFilms->del_films($id)){
 			redirect('Create/read_all_films', 'refresh');
 		}
+	}
+
+	function film($id = 0){
+		$id = $this->uri->segment(3);
+		$data['films'] = $this->MFilms->view_film_byid($id);
+		// print_r($data);
+		$this->load->view('fdetails', $data);
 	}
 } //end of create 
 ?>

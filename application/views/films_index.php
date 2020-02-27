@@ -125,9 +125,9 @@ a:hover {
 	foreach ($films as $row) {
 ?>
   <div class="card movie-card">
-    <img class="card-img-top" src="<?php echo base_url().$row->image;  ?>" alt="<?php echo $row->strFilmTitle;  ?>" style="width: 300px; height: 300px;">
+    <img class="card-img-top" src="<?php echo base_url().$row->image;  ?>" alt="<?php echo $row->strFilmTitle;  ?>" class="img-fluid">
     <div class="card-body movie-content">
-      <a href="film/title=<?php echo $row->strFilmTitle;  ?>" class="card-title movie-title"><?php echo $row->strFilmTitle; ?></a>
+    	<?php echo anchor('Create/film/'.$row->lngFilmTitleID.'', $row->strFilmTitle, 'class="card-text btn btn-primary"'); ?>
       <p class="card-text"><?php echo $row->memFilmStory;  ?></p>
 	  <p class="card-text"><?php echo $row->dtmFilmReleaseDate;  ?></p>
 	  <p class="card-text"><?php echo $row->intFilmDuration;  ?>mins</p>
