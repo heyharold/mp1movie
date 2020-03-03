@@ -22,6 +22,7 @@ class Welcome extends CI_Controller {
 	{
 		$data = array();
 		$data['films'] =$this->MFilms->read_films();
+		// $data['rate'] = $this->input->post('demo');
 		// print_r($data);
 		$this->load->view('header', $data);
 		$this->load->view('films_index' , $data);

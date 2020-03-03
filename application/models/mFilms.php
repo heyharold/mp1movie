@@ -140,12 +140,14 @@
 
 		function view_film_byid($id){
 			$data = array();
+			$rateing = array();
 			$this->db->select('*');
 			$this->db->where('lngFilmTitleID', $id);
 			$query = $this->db->get('tblfilmtitles');
 			if($query->num_rows() > 0){
 				foreach ($query->result_array() as $row) {
 					$data['lngFilmTitleID'] = $row['lngFilmTitleID'];
+					$rating['lngFilmTitleID'] = $row['lngFilmTitleID'];
 					$data['strFilmTitle'] = $row['strFilmTitle'];
 					$data['memFilmStory'] = $row['memFilmStory'];
 					$data['dtmFilmReleaseDate'] = $row['dtmFilmReleaseDate'];
@@ -159,7 +161,23 @@
 			$data['lngFilmGenreID']= $this->MGenre->read_genre_byid($genre);
 			$data['lngFilmCertificateID']= $this->MCert->read_cert_byid($cert);
 			$query->free_result();
+			if($this->input->post('demo') != null){
+				$rate = $this->input->post('demo');
+				$filmid = $rating['lngFilmTitleID'];
+				$data =array(
+					'lngFilmTitleID' => $filmid,
+					'lngRatingID' => $rate
+				);
+
+			}
+				$this->db->insert('tblfilmrating' , $data);
 			return $data;
+		}
+
+
+		function read_rating(){
+			$query = $this->db->get('tblratings');
+			return $query->result();
 		}
 	}//end of model class films;
 ?>

@@ -128,9 +128,9 @@ a:hover {
     <img class="card-img-top" src="<?php echo base_url().$row->image;  ?>" alt="<?php echo $row->strFilmTitle;  ?>" class="img-fluid">
     <div class="card-body movie-content">
     	<?php echo anchor('Create/film/'.$row->lngFilmTitleID.'', $row->strFilmTitle, 'class="card-text btn btn-primary"'); ?>
-      <p class="card-text"><?php echo $row->memFilmStory;  ?></p>
-	  <p class="card-text"><?php echo $row->dtmFilmReleaseDate;  ?></p>
-	  <p class="card-text"><?php echo $row->intFilmDuration;  ?>mins</p>
+      <!-- <p class="card-text"><?php //echo $row->memFilmStory;  ?></p> -->
+	  <!-- <p class="card-text"><?php //echo $row->dtmFilmReleaseDate;  ?></p> -->
+	  <!-- <p class="card-text"><?php //echo $row->intFilmDuration;  ?>mins</p> -->
       <p class="card-text"><small class="text-muted">Rating : <?php echo "N/A";  ?></small></p>
     </div>
   </div>
