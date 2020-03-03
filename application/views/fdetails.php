@@ -68,8 +68,14 @@ require_once 'header.php';
     <p class="card-text"><?php echo $films['lngFilmGenreID'];  ?></p>
     <span class="badge badge-pill badge-info">Certificate</span>
     <p class="card-text"><?php echo $films['lngFilmCertificateID'];  ?></p>
-        <span class="badge badge-pill badge-info">Info</span>
+    <span class="badge badge-pill badge-info">Info</span>
     <p class="card-text"><?php echo $films['memFilmAdditionalInfo'];  ?></p>
+    <span class="badge badge-pill badge-info">Ratings</span>
+    <p class="card-text"><?php
+      $rate =  round((1*$rating_1 + 2*$rating_2 + 3*$rating_3 + 4*$rating_4 + 5*$rating_5) / $voters['voters']);
+      echo $rate;
+      // echo round($rating[0]['lngRatingID']); 
+      ?>/5</p>
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">WATCH</button>
     <a href="#" class="btn btn-primary">DOWNLOAD</a>
   </div>
@@ -110,17 +116,14 @@ require_once 'header.php';
         <label for="demo-5">5 stars</label>
         
         <div class="stars">
-            <label for="demo-1" aria-label="1 star" title="1 star"></label>
-            <label for="demo-2" aria-label="2 stars" title="2 stars"></label>
-            <label for="demo-3" aria-label="3 stars" title="3 stars"></label>
-            <label for="demo-4" aria-label="4 stars" title="4 stars"></label>
-            <label for="demo-5" aria-label="5 stars" title="5 stars"></label>   
+          <?php 
+          
+            for($x=0; $x<=4; $x++){
+              echo "<label for=\"demo-".$rates[$x]['lngRatingID']."\" aria-label=\"".$rates[$x]['strRatingDesc']."\" title=\"".$rates[$x]['strRatingDesc']."\"></label>"; 
+            }
+          ?>
         </div>
             </fieldset>
-      <!-- <label for="toggle-rating">
-          <input type="checkbox" id="toggle-rating" checked>
-          style as ★ (<code>.rating .stars</code>)
-      </label> -->
 <?php echo form_submit('rate', 'Submit'); ?>
 </form>
         </div>
@@ -128,12 +131,8 @@ require_once 'header.php';
     </div>
   </div>
 </div>
-<!--     <script>
-        function clicks(){
-          if(alert("ok") == true){
-
-          document.getElementById("rate").action = "/action_page.php";
-          }
-          // window.location.href = "<?php //echo base_url()."Welcome/index";  ?>"
-        }
-    </script> -->
+<script>
+if ( window.history.replaceState ) {
+  window.history.replaceState( null, null, window.location.href );
+}
+</script>

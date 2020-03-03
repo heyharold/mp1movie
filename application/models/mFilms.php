@@ -161,23 +161,49 @@
 			$data['lngFilmGenreID']= $this->MGenre->read_genre_byid($genre);
 			$data['lngFilmCertificateID']= $this->MCert->read_cert_byid($cert);
 			$query->free_result();
-			if($this->input->post('demo') != null){
-				$rate = $this->input->post('demo');
-				$filmid = $rating['lngFilmTitleID'];
-				$data =array(
-					'lngFilmTitleID' => $filmid,
-					'lngRatingID' => $rate
-				);
-
-			}
-				$this->db->insert('tblfilmrating' , $data);
+			$filmid = $rating['lngFilmTitleID'];
+			$this->MFilms->add_rating($filmid);
 			return $data;
 		}
 
+		function add_rating($filmid){
+			if($this->input->post('demo') != null){
+				$rate = $this->input->post('demo');
+				$data =array(
+					'lngFilmTitleID' => $filmid,
+					'lngRatingID' => $rate,
+					'user_id' => 1
+				);
+				if($this->db->insert('tblfilmrating' , $data)){
+					unset($_POST['demo']);
+					return true;
+				}
+
+			}
+		}
 
 		function read_rating(){
 			$query = $this->db->get('tblratings');
-			return $query->result();
+			return $query->result_array();
+		}
+
+
+		function rates($filmid){
+			$this->db->select_avg('lngRatingID');
+			$query = $this->db->get_where('tblfilmrating', array('lngFilmTitleID' => $filmid));
+			return $query->result_array();
+		}
+
+		function get_rate($filmid, $equivrate){
+			$query = $this->db->query("SELECT COUNT(lngRatingID) as 'numbervotes' FROM tblfilmrating WHERE lngRatingID = $equivrate AND lngFilmTitleID = $filmid;");
+			$data = $query->row();
+			return $data->numbervotes;
+		}
+
+		function get_userrating_byfilm($filmid){
+			$this->db->select('COUNT(*) as \'voters\'');
+			$query = $this->db->get_where('tblfilmrating', array('lngFilmTitleID' => $filmid));
+			return $query->row_array();
 		}
 	}//end of model class films;
 ?>

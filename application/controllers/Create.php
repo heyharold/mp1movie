@@ -109,9 +109,17 @@ class Create extends CI_Controller{
 	}
 
 	function film($id = 0){
+		$data = array();
 		$id = $this->uri->segment(3);
 		$data['films'] = $this->MFilms->view_film_byid($id);
 		$data['rates'] = $this->MFilms->read_rating();
+		$data['rating'] = $this->MFilms->rates($id);
+		$data['voters'] = $this->MFilms->get_userrating_byfilm($id);
+		for ($i=1; $i<=5 ; $i++) { 
+			$data["rating_".$i] = $this->MFilms->get_rate($id, $i);
+		}
+		// print_r$data;
+		// var_dump($data);
 		$this->load->view('fdetails', $data);
 	}
 
