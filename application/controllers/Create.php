@@ -7,6 +7,13 @@ class Create extends CI_Controller{
     public function __construct() {
         parent::__construct();
         $this->CI = & get_instance();
+        // $this->load->library('session');
+        $this->load->helper('security');
+        session_start();
+        print_r($_SESSION);
+        if (isset($_SESSION['id'])) {
+        	$_SESSION['qty'] = $this->MCarts->select_usercart($_SESSION['id']);
+        }
     }
 
 	function Actor(){
@@ -30,6 +37,7 @@ class Create extends CI_Controller{
 		$data= array();
 		$data['actors'] = $this->MActor->read_all_actor();
 		$this->load->view('ractor', $data);
+		print_r($_SESSION);
 	}
 
 	function edit_actor($actor_id = 0){
@@ -115,18 +123,29 @@ class Create extends CI_Controller{
 		$data['rates'] = $this->MFilms->read_rating();
 		$data['rating'] = $this->MFilms->rates($id);
 		$data['voters'] = $this->MFilms->get_userrating_byfilm($id);
+		$data['analytics'] = $this->MFilms->getratingsbyfilm($id);
 		for ($i=1; $i<=5 ; $i++) { 
 			$data["rating_".$i] = $this->MFilms->get_rate($id, $i);
 		}
-		// print_r$data;
-		// var_dump($data);
+		for($x=0;$x<=12;$x++){
+			if ($this->MFilms->getratingsbymonth($id,$x) == NULL) {
+				$data['month_'.$x] = '0';	
+			} else {
+				$data['month_'.$x] = $this->MFilms->getratingsbymonth($id,$x); 
+			}
+		}
 		$this->load->view('fdetails', $data);
+		$this->load->view('stats', $data);
+	}
+
+	function addtocart($id = 0){
+		$id = $this->uri->segment(3);
+		$this->MCarts->add_tocart($id);
+		redirect('Create/film/'.$id.''); 
 	}
 
 
 	//functions for producer 
-
-
 
 	function producer(){
 		$this->load->view('cproducer');
@@ -175,6 +194,92 @@ class Create extends CI_Controller{
 		$rated = $_POST['btnClickedValue'];
 		echo $rated; 
 		redirect('Create/film', 'refresh');
+	}
+
+	function login(){
+		$this->load->view('login');
+	}
+
+	function verify(){
+		if (!empty($this->input->post('username'))) {
+			$u = $this->input->post('username');
+			$p = $this->input->post('password');			
+		}
+		if($this->MLogin->verifyuser($u,$p)){
+			$_SESSION['username'] = $u;
+			$_SESSION['id'] = $this->MLogin->verifyuser($u,$p);
+			    if (isset($_SESSION['id'])) {
+        			$_SESSION['qty'] = $this->MCarts->select_usercart($_SESSION['id']);
+        		}
+			redirect('Welcome/index', 'refresh');
+		}else{
+			redirect('Create/login','refresh');
+		}
+	}//end verify
+
+	function signup(){
+		$this->load->view('register');
+	}
+	function registers(){
+		if(!empty($this->input->post('username'))){
+			$f = $this->input->post('fname');
+			$l = $this->input->post('lname');
+			$u = $this->input->post('username');
+			$p = do_hash($this->input->post('password'), 'md5');
+			echo $f;
+			echo $l;
+			echo $u;
+			echo $p;
+		}
+		if($this->MLogin->registeruser($f,$l,$u,$p) == true){
+			redirect('Create/login', 'refresh');
+		} else {
+			redirect('Create/signup', 'refresh');
+		}
+	}
+
+	function logout(){
+		$this->MLogin->logout();
+		redirect('Welcome/index', 'refresh');
+	}
+
+
+	function viewcart(){
+		$data['carts'] =$this->MCarts->read_usercart($_SESSION['id']);
+		var_dump($data);
+		$this->load->view('cart', $data);
+	}
+
+	function removetocart(){
+		$filmid = $this->uri->segment(3);
+		$this->MCarts->remove_tocart($filmid,$_SESSION['id']);
+		redirect('Create/viewcart', 'refresh');
+	}
+
+	function reduceqty(){
+		$filmid = $this->uri->segment(3);
+		if($this->MCarts->reduce_qty($filmid, $_SESSION['id'])){
+			redirect('Create/viewcart', 'refresh');
+		}else {
+			redirect('Create/viewcart', 'refresh');
+		}
+	}
+
+	function addqty(){
+		$filmid = $this->uri->segment(3);
+		if ($this->MCarts->add_tocart($filmid)){
+			redirect('Create/viewcart', 'refresh');
+		}
+	}
+
+	function checkout(){
+		if (isset($_POST['checkout'])) {
+			foreach ($_POST['filmid'] as $ids) {
+				echo $ids;
+				$this->MCarts->order($ids, $_SESSION['id']);
+			}
+		}
+		redirect('Create/viewcart', 'refresh');
 	}
 } //end of create 
 ?>

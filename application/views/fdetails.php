@@ -61,7 +61,7 @@ require_once 'header.php';
   <div class="card-body">
   	<span class="badge badge-pill badge-primary">Title</span>
     <h5 class="card-title"><?php echo $films['strFilmTitle'];  ?></h5>
-    <img src="<?php echo base_url().$films['image']; ?>" class="card-text" alt="image" style="width: 50%; height: 50%; "><br>
+    <img src="<?php echo "http://harlie.com/".$films['image'].""; ?>" class="card-text" alt="image"><br>
     <span class="badge badge-pill badge-secondary">Story</span>
     <p class="card-text text-center"><?php echo $films['memFilmStory'];  ?></p>
     <span class="badge badge-pill badge-info">Genre</span>
@@ -72,12 +72,29 @@ require_once 'header.php';
     <p class="card-text"><?php echo $films['memFilmAdditionalInfo'];  ?></p>
     <span class="badge badge-pill badge-info">Ratings</span>
     <p class="card-text"><?php
-      $rate =  round((1*$rating_1 + 2*$rating_2 + 3*$rating_3 + 4*$rating_4 + 5*$rating_5) / $voters['voters']);
-      echo $rate;
-      // echo round($rating[0]['lngRatingID']); 
+    // $rate = 0;
+    if($rating[0]['lngRatingID'] == null){
+      echo "N/A";
+    }
+      else {echo $rate = number_format((1*$rating_1 + 2*$rating_2 + 3*$rating_3 + 4*$rating_4 + 5*$rating_5) / $voters['voters'], 1);
+      }
       ?>/5</p>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">WATCH</button>
-    <a href="#" class="btn btn-primary">DOWNLOAD</a>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">WATCH</button><br><br>
+    <?php if (isset($_SESSION['username'])) {
+      echo form_open('Create/addtocart/'.$films['lngFilmTitleID'].''); //Create/film/addtocart/'.$films['lngFilmTitleID'].'
+      $data = array(
+        'name'  => 'addtocart',
+        'value' => 'DOWNLOAD',
+        'onclick' => 'toastr.success(\'Movie added!!\')',
+        'class' => 'btn btn-success'
+);
+      echo form_submit($data);
+      echo form_close();
+      // echo anchor('Create/film/'.$films['lngFilmTitleID'].'', 'DOWNLOAD', 'class="btn btn-success" onclick="toastr.success(\'Movie added to cart!!!\')"');
+      // echo '<button class="btn btn-success" onclick="toastr.success(\'Movie added to cart successfully!\');" name="addtocart" formaction="'.base_url().'Create/film/'.$films['lngFilmTitleID'].'" method="POST"">DOWNLOAD</button>'; }
+    }
+      else { echo '<button class="btn btn-success" onclick="toastr.error(\'Cannot add to cart, Login first!.\');" name="addtocart">DOWNLOAD</button>';} ?>
+    <!-- <a href="#" class="btn btn-primary">DOWNLOAD</a> -->
   </div>
   <div class="card-footer text-muted">
     <?php echo $films['dtmFilmReleaseDate']; ?>
@@ -124,7 +141,9 @@ require_once 'header.php';
           ?>
         </div>
             </fieldset>
-<?php echo form_submit('rate', 'Submit'); ?>
+<?php if (!isset($_SESSION['username'])) {
+  echo anchor('Create/login', 'Submit' , 'class="btn btn-primary"');
+}else {echo form_submit('rate', 'Submit', 'class="btn btn-primary"');} ?>
 </form>
         </div>
       </div>

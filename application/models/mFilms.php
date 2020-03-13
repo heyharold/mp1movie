@@ -9,6 +9,7 @@
 		public function __construct()
 		{
 			parent::__construct();
+			// session_start();
 		}
 
 		function get_last_id_Film(){
@@ -48,8 +49,8 @@
 				$config['max_size'] = '200';
 				$config['remove_spaces'] = true;
 				$config['overwrite'] = false;
-				$config['max_width'] = '0';
-				$config['max_height'] = '0';
+				$config['max_width'] = '570';
+				$config['max_height'] = '844';
 				$this->load->library('upload', $config);
 				if(!$this->upload->do_upload('image')){
 					echo $this->upload->display_errors();
@@ -139,6 +140,7 @@
 		}
 
 		function view_film_byid($id){
+			$this->db->reconnect();
 			$data = array();
 			$rateing = array();
 			$this->db->select('*');
@@ -164,15 +166,17 @@
 			$filmid = $rating['lngFilmTitleID'];
 			$this->MFilms->add_rating($filmid);
 			return $data;
+			mysqli_free_result($query);
 		}
 
 		function add_rating($filmid){
+			$this->db->reconnect();
 			if($this->input->post('demo') != null){
 				$rate = $this->input->post('demo');
 				$data =array(
 					'lngFilmTitleID' => $filmid,
 					'lngRatingID' => $rate,
-					'user_id' => 1
+					'user_id' => $_SESSION['id']
 				);
 				if($this->db->insert('tblfilmrating' , $data)){
 					unset($_POST['demo']);
@@ -183,27 +187,55 @@
 		}
 
 		function read_rating(){
+			$this->db->reconnect();
 			$query = $this->db->get('tblratings');
 			return $query->result_array();
+			mysqli_free_result($query);
 		}
 
 
 		function rates($filmid){
+			$this->db->reconnect();
 			$this->db->select_avg('lngRatingID');
 			$query = $this->db->get_where('tblfilmrating', array('lngFilmTitleID' => $filmid));
 			return $query->result_array();
+			mysqli_free_result($query);
 		}
 
 		function get_rate($filmid, $equivrate){
+			$this->db->reconnect();
 			$query = $this->db->query("SELECT COUNT(lngRatingID) as 'numbervotes' FROM tblfilmrating WHERE lngRatingID = $equivrate AND lngFilmTitleID = $filmid;");
 			$data = $query->row();
 			return $data->numbervotes;
+			mysqli_free_result($query);
 		}
 
 		function get_userrating_byfilm($filmid){
 			$this->db->select('COUNT(*) as \'voters\'');
 			$query = $this->db->get_where('tblfilmrating', array('lngFilmTitleID' => $filmid));
 			return $query->row_array();
+			mysqli_free_result($query);
+			$this->db->close();
+		}
+
+		function getratingsbyfilm($filmid){
+			$this->db->reconnect();
+			$query = $this->db->query('CALL getratingsbyfilm('.$filmid.');');
+/*			foreach ($query->result_array() as $row) {
+				$data[$row-] = 
+			}*/
+			return $query->result_array();
+			mysqli_free_result($query);
+			$this->db->close();
+		}
+
+		function getratingsbymonth($filmid, $month){
+			$this->db->reconnect();
+			$query = $this->db->query('CALL getratingsbymonth('.$filmid.','.$month.');');
+			$data = $query->row();
+			return $data->avgrate;
+			mysqli_free_result($query);
+			$this->db->close();
 		}
 	}//end of model class films;
 ?>

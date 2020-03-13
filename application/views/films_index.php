@@ -1,3 +1,4 @@
+<!-- <script data-ad-client="ca-pub-3103702203644363" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> -->
 <style type="text/css">
 body {
   height: 100%;
@@ -51,11 +52,12 @@ a:hover {
 }
 
 .movie-card {
+
   background: #ffffff;
   box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 315px;
-  margin: 2em;
+  margin: 1em;
   border-radius: 10px;
   display: inline-block;
 }
@@ -92,7 +94,7 @@ a:hover {
 }
 
 .movie-content {
-  padding: 18px 18px 24px 18px;
+  /*padding: 18px 18px 24px 18px;*/
   margin: 0;
 }
 
@@ -117,24 +119,36 @@ a:hover {
   .container {
     padding: 0;
     margin: 0;
+    width: 100%;
   }
 }
 </style>
-<div class="card-deck container">
+<!-- -->
 <?php
+$r =1;
 	foreach ($films as $row) {
+if($r == 3){
 ?>
-  <div class="card movie-card">
-    <img class="card-img-top" src="<?php echo base_url().$row->image;  ?>" alt="<?php echo $row->strFilmTitle;  ?>" class="img-fluid">
-    <div class="card-body movie-content">
-    	<?php echo anchor('Create/film/'.$row->lngFilmTitleID.'', $row->strFilmTitle, 'class="card-text btn btn-primary"'); ?><br>
+<div class="card-deck container card-group">
+<?php  } ?>
+  <div class="card movie-card card-body shadow-lg p-3 mb-5 bg-white rounded">
+    <a href="<?php echo base_url('Create/film/'.$row->lngFilmTitleID.'');  ?>"><img class="card-img-top" src="<?php echo base_url().$row->image;  ?>" alt="<?php echo $row->strFilmTitle;  ?>" class="img-fluid" width=285px; height=422px;></a>
+    <!-- <div class="card-body movie-content"> -->
+    	<?php //echo anchor('Create/film/'.$row->lngFilmTitleID.'', $row->strFilmTitle, 'class="card-text btn btn-primary"'); ?><br>
       <!-- <p class="card-text"><?php //echo $row->memFilmStory;  ?></p> -->
 	  <!-- <p class="card-text"><?php //echo $row->dtmFilmReleaseDate;  ?></p> -->
 	  <!-- <p class="card-text"><?php //echo $row->intFilmDuration;  ?>mins</p> -->
-      <p class="card-text"><small class="text-muted">Rating : <?php echo anchor('Create/film/'.$row->lngFilmTitleID.'', 'see', 'class="card-text text-muted"'); ?></small></p>
+      <!-- <p class="card-text"><small class="text-muted">Rating : <?php //echo anchor('Create/film/'.$row->lngFilmTitleID.'', 'see', 'class="card-text text-muted"'); ?></small></p> -->
     </div>
   </div>
 <?php
+$r++;
+if ($r == 3) {
+  $r = 0;
+}
 }
   ?>	
-</div>
+<!-- </div> -->
+<script src="http://code.jquery.com/jquery-2.1.3.min.js">
+  
+document.onload = setTimeout(function () { alert('msg'); }, 5000);
